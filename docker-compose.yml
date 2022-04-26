@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: db
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+      # - ./users/script:/docker-entrypoint-initdb.d
+    user: 1000:1000 # the solution for the systemd-coredump problem
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PUID=1000 # useless for systemd-coredump problem
+      - PGID=1000
+    ports:
+      - 5432:5432
+  back:
+    container_name: back
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=betterlife.settings
+    depends_on:
+      - db
