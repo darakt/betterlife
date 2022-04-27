@@ -11,7 +11,8 @@ attributeWhiteListed = [ # we don't want to pass everything to the front so no n
     'first_name',
     'last_name',
     'email',
-    'date_joined'
+    'date_joined',
+    'role'
 ]
 
 def get_deleted_comment():
@@ -44,8 +45,12 @@ class User(AbstractUser):
         return jsonified
     class Meta:
         permissions = [
-                ('can_create_user', 'can create user'),
-                ('can_read_user','can read user'),
-                ('can_update_user', 'can update user'),
-                ('can_delete_user', 'can delete user')
-                ]
+            ('can_create_a_superuser', 'can create a super user'),
+            ('can_create_an_org_admin', 'can create an org admin'),
+            ('can_create_an_project_owner', 'can create an org admin'),
+            ('can_create_an_org_member', 'can create an org member'),
+            ('can_create_an_project_member', 'can create an project member'),
+            ('can_read_user','can read user'), # superuser must be excluded here !!!!!
+            ('can_update_user', 'can update user'),
+            ('can_delete_user', 'can delete user')
+            ]

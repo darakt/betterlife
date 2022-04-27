@@ -5,8 +5,9 @@ from users.models import User
 from users.errors import GenericError, NoValueError
 from django.db import IntegrityError
 from django.http import JsonResponse
-from users.helpers import clean_string
+from users.helpers import create_user_with_role
 from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.contenttypes.models import ContentType
 import json
 import string
 import ast
@@ -20,12 +21,33 @@ def status():
 def create(request): # add mandatory fields (name, ...) + here we are using form data
     if request.method == 'POST':
         try:
-            email = clean_string(request.POST, 'email', string.punctuation.replace('@', '').replace('.', ''))
-            username = clean_string(request.POST, 'username', string.punctuation)
-            first_name = clean_string(request.POST, 'first_name', string.punctuation)
-            last_name = clean_string(request.POST, 'last_name', string.punctuation)
-            password = clean_string(request.POST, 'password', '') # front should send an hash
-            new = User(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
+            data = json.loads(request.body.decode("UTF-8"))
+            new = create_user_with_role(data=data, role=5)
+            return JsonResponse(new.toJson())
+        except Exception as err:
+            customError = GenericError(err.__class__.__name__)
+            return JsonResponse(customError.toJson(), status=400)
+    return JsonResponse({
+        'code':405,
+        'message': 'Only POST is allowed'
+    })
+
+@csrf_exempt
+def createSuperuser(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode("UTF-8"))
+            new = create_user_with_role(data=data, role=1)
+            # a superuser can do everything
+            perm_read = Permission.objects.get( codename="can_read_user")
+            perm_update = Permission.objects.get( codename="can_update_user")
+            perm_delete = Permission.objects.get( codename="can_delete_user")
+            perm_create_a_superuser = Permission.objects.get( codename="can_create_a_superuser")
+            perm_create_an_org_admin = Permission.objects.get( codename="can_create_an_org_admin")
+            perm_create_a_project_owner = Permission.objects.get( codename="can_create_an_project_owner")
+            perm_create_an_org_member = Permission.objects.get( codename="can_create_an_org_member")
+            perm_create_a_project_member = Permission.objects.get( codename="can_create_an_project_member")
+            new.user_permissions.set([perm_create_a_superuser, perm_create_an_org_admin, perm_create_a_project_owner, perm_create_an_org_member, perm_create_a_project_member,perm_read, perm_update, perm_delete])
             new.save()
             return JsonResponse(new.toJson())
         except Exception as err:
@@ -33,7 +55,87 @@ def create(request): # add mandatory fields (name, ...) + here we are using form
             return JsonResponse(customError.toJson(), status=400)
     return JsonResponse({
         'code':405,
-        'message': 'Onyly POST is allowed'
+        'message': 'Only POST is allowed'
+    })
+
+@csrf_exempt
+def createOrgAdmin(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode("UTF-8"))
+            new = create_user_with_role(data=data, role=2)
+            perm_read = Permission.objects.get( codename="can_read_user")
+            perm_update = Permission.objects.get( codename="can_update_user")
+            perm_delete = Permission.objects.get( codename="can_delete_user")
+            perm_create_a_superuser = Permission.objects.get( codename="can_create_a_superuser")
+            perm_create_an_org_admin = Permission.objects.get( codename="can_create_an_org_admin")
+            perm_create_a_project_owner = Permission.objects.get( codename="can_create_an_project_owner")
+            perm_create_an_org_member = Permission.objects.get( codename="can_create_an_org_member")
+            perm_create_a_project_member = Permission.objects.get( codename="can_create_an_project_member")
+            new.user_permissions.set([perm_create_a_superuser, perm_create_an_org_admin, perm_create_a_project_owner, perm_create_an_org_member, perm_create_a_project_member,perm_read, perm_update, perm_delete])
+            new.save()
+            return JsonResponse(new.toJson())
+        except Exception as err:
+            customError = GenericError(err.__class__.__name__)
+            return JsonResponse(customError.toJson(), status=400)
+    return JsonResponse({
+        'code':405,
+        'message': 'Only POST is allowed'
+    })
+
+@csrf_exempt
+def createOrgMember(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode("UTF-8"))
+            new = create_user_with_role(data=data, role=3)
+            perm_read = Permission.objects.get( codename="can_read_user")
+            new.user_permissions.set([perm_read])
+            new.save()
+            return JsonResponse(new.toJson())
+        except Exception as err:
+            customError = GenericError(err.__class__.__name__)
+            return JsonResponse(customError.toJson(), status=400)
+    return JsonResponse({
+        'code':405,
+        'message': 'Only POST is allowed'
+    })
+
+@csrf_exempt
+def createProjOwner(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode("UTF-8"))
+            new = create_user_with_role(data=data, role=4)
+            perm_read = Permission.objects.get( codename="can_read_user")
+            new.user_permissions.set([perm_read])
+            new.save()
+            return JsonResponse(new.toJson())
+        except Exception as err:
+            customError = GenericError(err.__class__.__name__)
+            return JsonResponse(customError.toJson(), status=400)
+    return JsonResponse({
+        'code':405,
+        'message': 'Only POST is allowed'
+    })
+
+
+@csrf_exempt
+def createProjMember(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode("UTF-8"))
+            new = create_user_with_role(data=data, role=5)
+            perm_read = Permission.objects.get( codename="can_read_user")
+            new.user_permissions.set([perm_read])
+            new.save()
+            return JsonResponse(new.toJson())
+        except Exception as err:
+            customError = GenericError(err.__class__.__name__)
+            return JsonResponse(customError.toJson(), status=400)
+    return JsonResponse({
+        'code':405,
+        'message': 'Only POST is allowed'
     })
 
 def getAUser(request, id = 0): # through ID | id = 0, bad idea?
@@ -48,7 +150,7 @@ def getAUser(request, id = 0): # through ID | id = 0, bad idea?
             return JsonResponse(customError.toJson(), status=400)
     return JsonResponse({
         'code':405,
-        'message': 'Onyly GET is allowed'
+        'message': 'Only GET is allowed'
     })
 
 @csrf_exempt
@@ -69,12 +171,11 @@ def update(request, id): # here we are passing raw json
         except GenericError as err:
             return JsonResponse(err.toJson(), status=403)
         except Exception as err:
-            print(err)
             customError = GenericError(err.__class__.__name__)
             return JsonResponse(customError.toJson(), status=403)
     return JsonResponse({
         'code':405,
-        'message': 'Onyly PATCH is allowed'
+        'message': 'Only PATCH is allowed'
     })
 
 @csrf_exempt
@@ -93,5 +194,5 @@ def delete(request, id=0):
             return JsonResponse(customError.toJson(), status=400)
     return JsonResponse({
         'code':405,
-        'message': 'Onyly DELETE is allowed'
+        'message': 'Only DELETE is allowed'
     })
