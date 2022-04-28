@@ -11,6 +11,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL(
-        'ALTER SEQUENCE users_user_id_seq RESTART WITH 2;'
+        'ALTER SEQUENCE users_user_id_seq RESTART WITH 7;'
     )
     ]

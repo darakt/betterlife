@@ -2,8 +2,6 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import Permission
-import json
 
 attributeWhiteListed = [ # we don't want to pass everything to the front so no need to jsonified everything
     'id',
@@ -18,7 +16,7 @@ attributeWhiteListed = [ # we don't want to pass everything to the front so no n
 def get_deleted_comment():
     pass
 
-def get_placeholder_for_deleted_comment():
+def get_placeholder_for_deleted_comment(): # TODO change name
     return User.objects.get_or_create(id=1)
 
 class User(AbstractUser):

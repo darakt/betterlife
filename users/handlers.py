@@ -47,7 +47,24 @@ def createSuperuser(request):
             perm_create_a_project_owner = Permission.objects.get( codename="can_create_an_project_owner")
             perm_create_an_org_member = Permission.objects.get( codename="can_create_an_org_member")
             perm_create_a_project_member = Permission.objects.get( codename="can_create_an_project_member")
-            new.user_permissions.set([perm_create_a_superuser, perm_create_an_org_admin, perm_create_a_project_owner, perm_create_an_org_member, perm_create_a_project_member,perm_read, perm_update, perm_delete])
+            perm_create_comment = Permission.objects.get( codename="can_create_a_comment")
+            perm_read_comments = Permission.objects.get( codename="can_read_all_the_comments")
+            perm_update_comments = Permission.objects.get( codename="can_update_comments")
+            perm_delete_comment = Permission.objects.get( codename="can_delete_comment")
+            new.user_permissions.set([
+                perm_create_a_superuser,
+                perm_create_an_org_admin,
+                perm_create_a_project_owner,
+                perm_create_an_org_member,
+                perm_create_a_project_member,
+                perm_read,
+                perm_update,
+                perm_delete,
+                perm_create_comment,
+                perm_read_comments,
+                perm_update_comments,
+                perm_delete_comment,
+            ])
             new.save()
             return JsonResponse(new.toJson())
         except Exception as err:
@@ -72,7 +89,16 @@ def createOrgAdmin(request):
             perm_create_a_project_owner = Permission.objects.get( codename="can_create_an_project_owner")
             perm_create_an_org_member = Permission.objects.get( codename="can_create_an_org_member")
             perm_create_a_project_member = Permission.objects.get( codename="can_create_an_project_member")
-            new.user_permissions.set([perm_create_a_superuser, perm_create_an_org_admin, perm_create_a_project_owner, perm_create_an_org_member, perm_create_a_project_member,perm_read, perm_update, perm_delete])
+            new.user_permissions.set([
+                perm_create_a_superuser,
+                perm_create_an_org_admin,
+                perm_create_a_project_owner,
+                perm_create_an_org_member,
+                perm_create_a_project_member,
+                perm_read,
+                perm_update,
+                perm_delete
+            ])
             new.save()
             return JsonResponse(new.toJson())
         except Exception as err:
