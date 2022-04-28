@@ -41,6 +41,10 @@ def permissions_for_superuser():
     perm_read_organization = Permission.objects.get( codename="can_read_all_the_organization")
     perm_update_organization = Permission.objects.get( codename="can_update_organization")
     perm_delete_organization = Permission.objects.get( codename="can_delete_organization")
+    perm_create_project = Permission.objects.get( codename="can_create_a_project")
+    perm_read_project = Permission.objects.get( codename="can_read_all_the_project")
+    perm_update_project = Permission.objects.get( codename="can_update_project")
+    perm_delete_project = Permission.objects.get( codename="can_delete_project")
     return [
             perm_create_a_superuser,
             perm_create_an_org_admin,
@@ -58,6 +62,10 @@ def permissions_for_superuser():
             perm_read_organization,
             perm_update_organization,
             perm_delete_organization,
+            perm_create_project,
+            perm_read_project,
+            perm_update_project,
+            perm_delete_project,
             ]
 
 def permissions_for_org_admin():
@@ -75,6 +83,10 @@ def permissions_for_org_admin():
     perm_delete_comment = Permission.objects.get( codename="can_delete_comment")
     perm_read_organization = Permission.objects.get( codename="can_read_all_the_organization")
     perm_update_organization = Permission.objects.get( codename="can_update_organization")
+    perm_create_project = Permission.objects.get( codename="can_create_a_project")
+    perm_read_project = Permission.objects.get( codename="can_read_all_the_project")
+    perm_update_project = Permission.objects.get( codename="can_update_project")
+    perm_delete_project = Permission.objects.get( codename="can_delete_project")
     return [
             perm_create_an_org_admin,
             perm_create_a_project_owner,
@@ -89,6 +101,10 @@ def permissions_for_org_admin():
             perm_delete_comment,
             perm_read_organization,
             perm_update_organization,
+            perm_create_project,
+            perm_read_project,
+            perm_update_project,
+            perm_delete_project,
             ]
 
 def permissions_for_org_member():
@@ -97,11 +113,15 @@ def permissions_for_org_member():
     perm_create_comment = Permission.objects.get( codename="can_create_a_comment")
     perm_read_comments = Permission.objects.get( codename="can_read_all_the_comments")
     perm_read_organization = Permission.objects.get( codename="can_read_all_the_organization")
+    perm_create_project = Permission.objects.get( codename="can_create_a_project")
+    perm_read_project = Permission.objects.get( codename="can_read_all_the_project")
     return [
             perm_read,
             perm_create_comment,
             perm_read_comments,
             perm_read_organization,
+            perm_create_project,
+            perm_read_project,
             ]
 
 def permissions_for_proj_owner():
@@ -110,11 +130,17 @@ def permissions_for_proj_owner():
     perm_create_comment = Permission.objects.get( codename="can_create_a_comment")
     perm_read_comments = Permission.objects.get( codename="can_read_all_the_comments")
     perm_read_organization = Permission.objects.get( codename="can_read_all_the_organization")
+    perm_read_project = Permission.objects.get( codename="can_read_all_the_project")
+    perm_update_project = Permission.objects.get( codename="can_update_project")
+    perm_delete_project = Permission.objects.get( codename="can_delete_project")
     return [
             perm_read,
             perm_create_comment,
             perm_read_comments,
             perm_read_organization,
+            perm_read_project,
+            perm_update_project,
+            perm_delete_project
             ]
 
 def permissions_for_proj_member():
@@ -122,8 +148,12 @@ def permissions_for_proj_member():
     perm_read = Permission.objects.get( codename="can_read_user")
     perm_create_comment = Permission.objects.get( codename="can_create_a_comment")
     perm_read_organization = Permission.objects.get( codename="can_read_all_the_organization")
+    perm_read_project = Permission.objects.get( codename="can_read_all_the_project")
+    perm_update_project = Permission.objects.get( codename="can_update_project")
     return [
             perm_read,
             perm_create_comment,
             perm_read_organization,
+            perm_read_project,
+            perm_update_project,
             ]

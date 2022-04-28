@@ -22,7 +22,6 @@ def create(request): # add mandatory fields (name, ...) + here we are using form
             created_by = User.objects.get(id=data['created_by'])
             admins = []
             if 'admins' in data: # could be a function, worth ?
-                admins = []
                 tmp = None
                 for id in data['admins']:
                     tmp = User.objects.get(id=id)
@@ -31,7 +30,6 @@ def create(request): # add mandatory fields (name, ...) + here we are using form
             admins.append(created_by)
             members = []
             if 'members' in data:
-                members = []
                 tmp = None
                 for id in data['members']:
                     tmp = User.objects.get(id=id)
@@ -90,23 +88,21 @@ def update(request, id): # here we are passing raw json
                         if newAdmin.role == 1 or newAdmin.role == 2:
                             toUpdate.admins.add(newAdmin)
                         else:
-                            raise PermissionDenied
+                            raise GenericError('The user {} is not an admin'.format(newAdmin.id))
                 elif topic == 'members':
-                    newUser = None
+                    newMember = None
                     for id in data[topic]:
-                        newUser = User.objects.get(id=id)
-                        if newUser.role == 3:
-                            toUpdate.members.add(newUser)
+                        newMember = User.objects.get(id=id)
+                        if newMember.role == 3:
+                            toUpdate.members.add(newMember)
                         else:
-                            raise PermissionDenied
+                            raise GenericError('The user {} is not a member'.format(newMember.id))
                 else:
                     toUpdate.__setattr__(topic, data[topic])
             toUpdate.save()
             return JsonResponse(toUpdate.toJson(), status=204)
         except GenericError as err:
             return JsonResponse(err.toJson(), status=403)
-        except PermissionDenied as err:
-            return JsonResponse({"message": 'you are tring to update the admins or the members with a user which have not the right permission'}, status=403)
         except Exception as err:
             customError = GenericError(err.__class__.__name__)
             return JsonResponse(customError.toJson(), status=403)
@@ -119,7 +115,6 @@ def update(request, id): # here we are passing raw json
 def delete(request, id=0):
     if request.method == 'DELETE':
         try:
-            orga = Organization.objects.get(id=id)
             resp = Organization.objects.get(id=id).delete()
             return JsonResponse({
                 'code': 200,

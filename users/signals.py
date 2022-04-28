@@ -1,6 +1,6 @@
 
 
-def populateDB(sender, **kwargs):
+def populate_db(sender, **kwargs):
     from django.contrib.auth.models import Permission
 
     from .models import User

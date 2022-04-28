@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'users',
     'comments',
     'organizations',
+    'projects',
     'tests',
 ]
 

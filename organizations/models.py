@@ -2,6 +2,9 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from users.models import User
 
+def default_organization():
+    return Organization.objects.get(id=1)
+
 class Organization(models.Model):
 
     class Languages(models.TextChoices):
@@ -31,7 +34,7 @@ class Organization(models.Model):
             "name": self.name,
             "description": self.description,
             "admins": admins,
-            "members": members
+            "members": members,
         }
         return jsonified
 
