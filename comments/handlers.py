@@ -21,18 +21,13 @@ def create(request): # add mandatory fields (name, ...) + here we are using form
         try:
             data = json.loads(request.body.decode("UTF-8"))
             creator = User.objects.get(id=data['written_by'])
-            print(hasattr(data, 'in_response_to'))
-            print(data['in_response_to'])
             if 'in_response_to' in data:
-                print('it worked')
                 try: # EAFP
                     in_response_to = Comment.objects.get(id=data['in_response_to'])
                 except Exception as err:
                     raise GenericError('{}WithInResponseTo'.format(err.__class__.__name__))
             else:
                 in_response_to = None
-            if hasattr(data, 'in_response_to'):
-                in_response_to = data['in_response_to']
             new = Comment(
                 title=data['title'],
                 text=data['text'],

@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='user',
-            options={'permissions': [('can_create_a_superuser', 'can create a super user'), ('can_create_an_org_admin', 'can create an org admin'), ('can_create_an_project_owner', 'can create an org admin'), ('can_create_an_org_member', 'can create an org member'), ('can_create_an_project_member', 'can create an project member'), ('can_read_user', 'can read user'), ('can_update_user', 'can update user'), ('can_delete_user', 'can delete user')]},
+            options={'permissions': [('can_create_a_superuser', 'can create a super user'), ('can_create_an_org_admin', 'can create an org admin'), ('can_create_a_project_owner', 'can create an org admin'), ('can_create_an_org_member', 'can create an org member'), ('can_create_a_project_member', 'can create an project member'), ('can_read_user', 'can read user'), ('can_update_user', 'can update user'), ('can_delete_user', 'can delete user')]},
         ),
     ]

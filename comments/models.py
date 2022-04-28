@@ -14,7 +14,6 @@ class Comment(models.Model):
     written_by = models.ForeignKey('users.User', on_delete=models.SET(get_placeholder_for_deleted_comment), related_name='has_written', default=1, db_column='written_by')
     in_response_to = models.ForeignKey('self', on_delete=models.SET(get_placeholder), blank=True, null=True, db_column='in_response_to') # I implement the soft-delete through set
     def toJson(self):
-        print(self.created_on)
         jsonified = {
             'id': self.id,
             'title': self.title,
@@ -23,7 +22,6 @@ class Comment(models.Model):
             'last_update': self.last_update,
             'written_by': self.written_by.toJson(),
         }
-        print(self.in_response_to)
         if self.in_response_to is not None:
             jsonified['in_response_to'] = self.in_response_to.toJson() # can cause problems with the performances
         return jsonified

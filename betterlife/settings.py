@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'betterlife',
     'users',
     'comments',
+    'organizations',
     'tests',
 ]
 

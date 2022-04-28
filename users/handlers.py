@@ -5,8 +5,8 @@ from users.models import User
 from users.errors import GenericError, NoValueError
 from django.db import IntegrityError
 from django.http import JsonResponse
-from users.helpers import create_user_with_role
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from users.helpers import create_user_with_role, permissions_for_org_admin, permissions_for_org_member, permissions_for_proj_member, permissions_for_proj_owner, permissions_for_superuser
+from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 import json
 import string
@@ -38,33 +38,7 @@ def createSuperuser(request):
         try:
             data = json.loads(request.body.decode("UTF-8"))
             new = create_user_with_role(data=data, role=1)
-            # a superuser can do everything
-            perm_read = Permission.objects.get( codename="can_read_user")
-            perm_update = Permission.objects.get( codename="can_update_user")
-            perm_delete = Permission.objects.get( codename="can_delete_user")
-            perm_create_a_superuser = Permission.objects.get( codename="can_create_a_superuser")
-            perm_create_an_org_admin = Permission.objects.get( codename="can_create_an_org_admin")
-            perm_create_a_project_owner = Permission.objects.get( codename="can_create_an_project_owner")
-            perm_create_an_org_member = Permission.objects.get( codename="can_create_an_org_member")
-            perm_create_a_project_member = Permission.objects.get( codename="can_create_an_project_member")
-            perm_create_comment = Permission.objects.get( codename="can_create_a_comment")
-            perm_read_comments = Permission.objects.get( codename="can_read_all_the_comments")
-            perm_update_comments = Permission.objects.get( codename="can_update_comments")
-            perm_delete_comment = Permission.objects.get( codename="can_delete_comment")
-            new.user_permissions.set([
-                perm_create_a_superuser,
-                perm_create_an_org_admin,
-                perm_create_a_project_owner,
-                perm_create_an_org_member,
-                perm_create_a_project_member,
-                perm_read,
-                perm_update,
-                perm_delete,
-                perm_create_comment,
-                perm_read_comments,
-                perm_update_comments,
-                perm_delete_comment,
-            ])
+            new.user_permissions.set(permissions_for_superuser())
             new.save()
             return JsonResponse(new.toJson())
         except Exception as err:
@@ -81,24 +55,7 @@ def createOrgAdmin(request):
         try:
             data = json.loads(request.body.decode("UTF-8"))
             new = create_user_with_role(data=data, role=2)
-            perm_read = Permission.objects.get( codename="can_read_user")
-            perm_update = Permission.objects.get( codename="can_update_user")
-            perm_delete = Permission.objects.get( codename="can_delete_user")
-            perm_create_a_superuser = Permission.objects.get( codename="can_create_a_superuser")
-            perm_create_an_org_admin = Permission.objects.get( codename="can_create_an_org_admin")
-            perm_create_a_project_owner = Permission.objects.get( codename="can_create_an_project_owner")
-            perm_create_an_org_member = Permission.objects.get( codename="can_create_an_org_member")
-            perm_create_a_project_member = Permission.objects.get( codename="can_create_an_project_member")
-            new.user_permissions.set([
-                perm_create_a_superuser,
-                perm_create_an_org_admin,
-                perm_create_a_project_owner,
-                perm_create_an_org_member,
-                perm_create_a_project_member,
-                perm_read,
-                perm_update,
-                perm_delete
-            ])
+            new.user_permissions.set(permissions_for_org_admin())
             new.save()
             return JsonResponse(new.toJson())
         except Exception as err:
@@ -116,7 +73,7 @@ def createOrgMember(request):
             data = json.loads(request.body.decode("UTF-8"))
             new = create_user_with_role(data=data, role=3)
             perm_read = Permission.objects.get( codename="can_read_user")
-            new.user_permissions.set([perm_read])
+            new.user_permissions.set(permissions_for_org_member())
             new.save()
             return JsonResponse(new.toJson())
         except Exception as err:
@@ -134,7 +91,7 @@ def createProjOwner(request):
             data = json.loads(request.body.decode("UTF-8"))
             new = create_user_with_role(data=data, role=4)
             perm_read = Permission.objects.get( codename="can_read_user")
-            new.user_permissions.set([perm_read])
+            new.user_permissions.set(permissions_for_proj_owner())
             new.save()
             return JsonResponse(new.toJson())
         except Exception as err:
@@ -153,7 +110,7 @@ def createProjMember(request):
             data = json.loads(request.body.decode("UTF-8"))
             new = create_user_with_role(data=data, role=5)
             perm_read = Permission.objects.get( codename="can_read_user")
-            new.user_permissions.set([perm_read])
+            new.user_permissions.set(permissions_for_proj_member())
             new.save()
             return JsonResponse(new.toJson())
         except Exception as err:
@@ -209,12 +166,10 @@ def delete(request, id=0):
     if request.method == 'DELETE':
         try:
             resp = User.objects.get(id=id).delete()
-            if resp[0] == 1:
-                return JsonResponse({
-                    'code': 200,
-                    'message': 'the user {} was deleted'.format(id)   # should just change the flag is_active to keep the data
-                })
-            raise IndexError
+            return JsonResponse({
+                'code': 200,
+                'message': 'the user {} was deleted'.format(id)   # should just change the flag is_active to keep the data
+            })
         except Exception as err:
             customError = GenericError(err.__class__.__name__)
             return JsonResponse(customError.toJson(), status=400)

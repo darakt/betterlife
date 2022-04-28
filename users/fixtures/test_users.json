@@ -320,7 +320,7 @@
     "fields": {
       "name": "can create an org admin",
       "content_type": 6,
-      "codename": "can_create_an_project_owner"
+      "codename": "can_create_a_project_owner"
     }
   },
   {
@@ -338,7 +338,7 @@
     "fields": {
       "name": "can create an project member",
       "content_type": 6,
-      "codename": "can_create_an_project_member"
+      "codename": "can_create_a_project_member"
     }
   },
   {

@@ -19,6 +19,15 @@ def get_deleted_comment():
 def get_placeholder_for_deleted_comment(): # TODO change name
     return User.objects.get_or_create(id=1)
 
+def get_user_from_id_and_check_role(id, role):
+    return User.objects.get(id=id)
+
+def get_users_from_ids(ids):
+    users = []
+    for id in ids:
+        users.append(User.objects.get(id=id))
+    return users;
+
 class User(AbstractUser):
     superuser = 1
     organization_admin = 2
@@ -45,9 +54,9 @@ class User(AbstractUser):
         permissions = [
             ('can_create_a_superuser', 'can create a super user'),
             ('can_create_an_org_admin', 'can create an org admin'),
-            ('can_create_an_project_owner', 'can create an org admin'),
+            ('can_create_a_project_owner', 'can create an org admin'),
             ('can_create_an_org_member', 'can create an org member'),
-            ('can_create_an_project_member', 'can create an project member'),
+            ('can_create_a_project_member', 'can create an project member'),
             ('can_read_user','can read user'), # superuser must be excluded here !!!!!
             ('can_update_user', 'can update user'),
             ('can_delete_user', 'can delete user')
