@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 from .signals import populate_db
-
+# TODO: sequence start at 2
 class OrganizationsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'organizations'
